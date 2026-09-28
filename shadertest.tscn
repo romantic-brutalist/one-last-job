@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://d34u2v8pi6kmy"]
+
+[ext_resource type="Shader" uid="uid://dstpbhd2hji7k" path="res://shaders/myshader.gdshader" id="1_2r8fq"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vuo5i"]
+shader = ExtResource("1_2r8fq")
+shader_parameter/tint = Color(1, 1, 1, 1)
+
+[node name="Node2D" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_vuo5i")
+offset_right = 1157.0
+offset_bottom = 651.0
+color = Color(1, 0.5803922, 1, 1)

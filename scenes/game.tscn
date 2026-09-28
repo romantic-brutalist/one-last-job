@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://blc5cgewech1m"]
+
+[ext_resource type="Script" uid="uid://b58h5vriouh30" path="res://scripts/game.gd" id="1_uwrxv"]
+[ext_resource type="Shader" uid="uid://dstpbhd2hji7k" path="res://shaders/myshader.gdshader" id="2_yqjtg"]
+[ext_resource type="Script" uid="uid://b8loki1beq8h" path="res://scenes/color_rect_2.gd" id="3_lnu2h"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lbhrr"]
+shader = ExtResource("2_yqjtg")
+shader_parameter/tint = Color(1, 1, 1, 1)
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_uwrxv")
+metadata/_edit_vertical_guides_ = [-1164.0]
+metadata/_edit_horizontal_guides_ = [-651.0]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -2
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1166.0
+offset_top = -648.0
+offset_right = 1160.0
+offset_bottom = 650.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.25, 1.25)
+drag_top_margin = 0.97
+
+[node name="boxes" type="Node2D" parent="."]
+
+[node name="Selector" type="ColorRect" parent="."]
+z_index = -1
+material = SubResource("ShaderMaterial_lbhrr")
+offset_left = -46.0
+offset_top = -46.0
+offset_right = 69.0
+offset_bottom = 53.0
+color = Color(0.9862918, 0.50488335, 0.31844193, 1)
+script = ExtResource("3_lnu2h")
