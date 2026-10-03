@@ -1,7 +1,7 @@
 extends Node2D
 
 const BASE := Color("#23ee47")
-const ALARM := Color("fc8151")
+const COMPUTE := Color("fc8151")
 const STEP := 128.0 / 255.0 / 4.0
 
 var cells: Array[ColorRect] = []
@@ -12,14 +12,14 @@ func _ready() -> void:
 	# $colorbox.color = Color("#23ee47")
 
 
-func setup(_position: Vector2, _size: Vector2 = Vector2(175, 125), ib_count: Vector2 = Vector2(4, 4), _type: String = "cells") -> void:
+func setup(_type: String, _position: Vector2, _size: Vector2 = Vector2(175, 125), ib_count: Vector2 = Vector2(4, 4)) -> void:
 	var ib_box_size: Vector2 = floor(_size / ib_count)
 	var ib_initial_pos: Vector2 = -2 * ib_box_size
 	var _color: Color
 	if _type == "cells":
 		_color = BASE
-	elif _type == "alarm":
-		_color = ALARM
+	elif _type == "compute":
+		_color = COMPUTE
 	for i in range(ib_count.x):
 		for j in range(ib_count.y):
 			# print(i, j)

@@ -11,32 +11,34 @@ var box_count: Vector2
 var direction: Vector2
 var box_size: Vector2
 var selector_scale: Vector2
-var box_count_cells: Vector2 = Vector2(0, 0)
+var box_count_cells: Vector2 = Vector2(4, 3)
 var box_count_compute: Vector2 = Vector2(1, 10)
+var init_margin: Vector2 = Vector2(0.2, 0.2)
 
 
 func _ready() -> void:
 	var plain_size: Vector2 = $ColorRect.size
 	print("Plain Size:", plain_size)
-	var split_size: Vector2 = Vector2(400, 300)
 	box_size = Vector2(175, 125)
 	selector_scale = Vector2(1.2, 1.25)
 	$Selector.size = box_size * selector_scale
-	var cell_positions: Array[Vector2] = generate_grid_positions(plain_size, Vector2(0, 0), box_size, split_size)
-	if box_count_cells.length() == 0:
-		if not cell_positions.is_empty():
-			box_count_cells = cell_positions.pop_back()
+	var cell_positions: Array[Vector2] = generate_grid_positions(plain_size, box_count_cells, box_size, init_margin)
 	for box_position in cell_positions:
 		print(box_position)
 		var box1: Node2D = box_scene.instantiate()
-		box1.setup(box_position)
+		box1.setup("cells", box_position)
 		boxes_cells.append(box1)
 		$boxes.add_child(box1)
 		cells.append(box_position)
 	$Selector.position = cells[selector_pos.x * box_count_cells.y + selector_pos.y] - box_size * (selector_scale / 2)
 
-	# var cell_positions_compute: Array[Vector2] = generate_grid_positions(plain_size, box_count_compute, box_size / 4, split_size / 4)
-
+	var cell_positions_compute: Array[Vector2] = generate_grid_positions(plain_size, box_count_compute, box_size / 4)
+	for compute_box_position in cell_positions_compute:
+		print(compute_box_position)
+		var box2: Node2D = box_scene.instantiate()
+		box2.setup("compute", compute_box_position, Vector2(75, 50), Vector2(1, 1))
+		boxes_compute.append(box2)
+		$boxes.add_child(box2)
 	print("BOX_COUNT:", box_count)
 
 
@@ -65,21 +67,10 @@ func generate_grid_positions(
 		_plain_size: Vector2,
 		_box_count,
 		_box_size: Vector2 = Vector2(175, 125),
-		_split_size: Vector2 = Vector2(400, 300),
 		margin_ratio: Vector2 = Vector2(0.1, 0.1),
 ) -> Array[Vector2]:
 	var positions: Array[Vector2]
-	var flag: bool = false
-	if _box_count.length() == 0:
-		if margin_ratio == null:
-			push_error("Generate Grid Error: Either margin_ratio or box_count ")
-		_box_count = floor(_plain_size * (Vector2(1, 1) - 2 * margin_ratio) / _split_size)
-		flag = true
-	elif _split_size.length() == 0:
-		var _straight_split_size = floor(_plain_size * (Vector2(1, 1) - 2 * margin_ratio) / _box_count)
-		var _residue: Vector2 = (_plain_size * (Vector2(1, 1) - 2 * margin_ratio) - _box_count * _straight_split_size) / _box_count
-		_split_size = _straight_split_size + _residue
-		print("split size:", _straight_split_size, _residue, _split_size)
+	var _split_size = floor(_plain_size * (Vector2(1, 1) - 2 * margin_ratio) / _box_count)
 
 	var margin: Vector2 = (_plain_size - _box_count * _split_size) / 2
 	var span: Vector2 = floor((_plain_size - 2 * margin - _box_size) / (_box_count - Vector2(1, 1)))
@@ -88,8 +79,6 @@ func generate_grid_positions(
 			var box_pos: Vector2 = $ColorRect.position + margin + _box_size / 2 + span * Vector2(i, j)
 			positions.append(box_pos)
 			print("Box pos idx|", i, j, box_pos)
-	if flag:
-		positions.append(_box_count)
 	return positions
 
 
