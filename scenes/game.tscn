@@ -10,8 +10,8 @@ shader_parameter/tint = Color(1, 1, 1, 1)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_uwrxv")
-metadata/_edit_vertical_guides_ = [-1164.0]
-metadata/_edit_horizontal_guides_ = [-651.0]
+metadata/_edit_vertical_guides_ = [-1164.0, -1088.0]
+metadata/_edit_horizontal_guides_ = [-651.0, -514.0]
 
 [node name="ColorRect" type="ColorRect" parent="."]
 z_index = -2
@@ -38,8 +38,8 @@ drag_top_margin = 0.97
 z_index = -1
 material = SubResource("ShaderMaterial_lbhrr")
 offset_left = -46.0
-offset_top = -46.0
+offset_top = -43.0
 offset_right = 69.0
-offset_bottom = 53.0
+offset_bottom = 56.0
 color = Color(0.9862918, 0.50488335, 0.31844193, 1)
 script = ExtResource("3_lnu2h")

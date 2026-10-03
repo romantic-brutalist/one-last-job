@@ -13,7 +13,7 @@ var box_size: Vector2
 var selector_scale: Vector2
 var box_count_cells: Vector2 = Vector2(4, 3)
 var box_count_compute: Vector2 = Vector2(1, 10)
-var init_margin: Vector2 = Vector2(0.2, 0.2)
+var init_margin: Vector4 = Vector4(0.2, 0.8, 0.2, 0.8)
 
 
 func _ready() -> void:
@@ -32,11 +32,11 @@ func _ready() -> void:
 		cells.append(box_position)
 	$Selector.position = cells[selector_pos.x * box_count_cells.y + selector_pos.y] - box_size * (selector_scale / 2)
 
-	var cell_positions_compute: Array[Vector2] = generate_grid_positions(plain_size, box_count_compute, box_size / 4)
+	var cell_positions_compute: Array[Vector2] = generate_grid_positions(plain_size, box_count_compute, box_size / 4, Vector4(0.025, 0.175, 0.1, 0.9), true)
 	for compute_box_position in cell_positions_compute:
 		print(compute_box_position)
 		var box2: Node2D = box_scene.instantiate()
-		box2.setup("compute", compute_box_position, Vector2(75, 50), Vector2(1, 1))
+		box2.setup("compute", compute_box_position, box_size / 4, Vector2(1, 1))
 		boxes_compute.append(box2)
 		$boxes.add_child(box2)
 	print("BOX_COUNT:", box_count)
@@ -67,16 +67,28 @@ func generate_grid_positions(
 		_plain_size: Vector2,
 		_box_count,
 		_box_size: Vector2 = Vector2(175, 125),
-		margin_ratio: Vector2 = Vector2(0.1, 0.1),
+		margin_ratio: Vector4 = Vector4(0.1, 0.9, 0.1, 0.9),
+		verbose: bool = false,
 ) -> Array[Vector2]:
 	var positions: Array[Vector2]
-	var _split_size = floor(_plain_size * (Vector2(1, 1) - 2 * margin_ratio) / _box_count)
 
-	var margin: Vector2 = (_plain_size - _box_count * _split_size) / 2
-	var span: Vector2 = floor((_plain_size - 2 * margin - _box_size) / (_box_count - Vector2(1, 1)))
+	var margin: Vector4 = Vector4(_plain_size.x, _plain_size.x, _plain_size.y, _plain_size.y) * margin_ratio
+	print("MARGIN:", margin)
+	if verbose:
+		draw_v_line($ColorRect.position.x + margin.x)
+		draw_v_line($ColorRect.position.x + margin.y)
+		draw_h_line($ColorRect.position.y + margin.z)
+		draw_h_line($ColorRect.position.y + margin.w)
+
+	var span: Vector2 = floor((_plain_size * Vector2(margin_ratio.y - margin_ratio.x, margin_ratio.w - margin_ratio.z) - _box_size) / (_box_count - Vector2(1, 1)).max(Vector2(1, 1)))
+	print("SPAN:", span)
+	var grid_start: Vector2 = $ColorRect.position + Vector2(margin.x, margin.z) + _box_size / 2
+	draw_v_line(grid_start.x, Color.BLUE)
+	draw_h_line(grid_start.y, Color.BLUE)
+	print("GRID START:", $ColorRect.position + Vector2(margin.x, margin.z) + _box_size / 2)
 	for i in range(_box_count.x):
 		for j in range(_box_count.y):
-			var box_pos: Vector2 = $ColorRect.position + margin + _box_size / 2 + span * Vector2(i, j)
+			var box_pos: Vector2 = $ColorRect.position + Vector2(margin.x, margin.z) + _box_size / 2 + span * Vector2(i, j)
 			positions.append(box_pos)
 			print("Box pos idx|", i, j, box_pos)
 	return positions
@@ -84,10 +96,21 @@ func generate_grid_positions(
 
 # func _process(delta: float) -> void:
 # 	print($boxes.get_child(0).get_child(0).color)
-func draw_v_line(x_pos: float) -> void:
+func draw_v_line(x_pos: float, color: Color = Color.RED) -> void:
 	var line = Line2D.new()
 	line.add_point(Vector2(x_pos, -1000))
 	line.add_point(Vector2(x_pos, 1000))
-	line.default_color = Color.RED
+	line.default_color = color
+	line.width = 2.0
+	add_child(line)
+
+
+# func _process(delta: float) -> void:
+# 	print($boxes.get_child(0).get_child(0).color)
+func draw_h_line(y_pos: float, color: Color = Color.RED) -> void:
+	var line = Line2D.new()
+	line.add_point(Vector2(-2000, y_pos))
+	line.add_point(Vector2(2000, y_pos))
+	line.default_color = color
 	line.width = 2.0
 	add_child(line)
