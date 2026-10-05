@@ -1,4 +1,5 @@
 extends ColorRect
+## Test scene: assigns myshader.gdshader to this ColorRect at runtime.
 
 func _ready() -> void:
 	var mat := ShaderMaterial.new()                                  # create the material
