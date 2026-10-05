@@ -2,6 +2,7 @@ extends Node2D
 
 const BASE := Color("#23ee47")
 const COMPUTE := Color("fc8151")
+const ALARM := Color.RED
 const STEP := 128.0 / 255.0 / 4.0
 
 var cells: Array[ColorRect] = []
@@ -13,19 +14,25 @@ func _ready() -> void:
 
 
 func setup(_type: String, _position: Vector2, _size: Vector2 = Vector2(175, 125), ib_count: Vector2 = Vector2(4, 4)) -> void:
+	# Here _size is the size of the outerbox, inner box sizer are calculated within the function
 	var ib_box_size: Vector2 = floor(_size / ib_count)
-	var ib_initial_pos: Vector2 = -2 * ib_box_size
+	var ib_initial_pos: Vector2 = -1 * (ib_count / 2) * ib_box_size
 	var _color: Color
 	if _type == "cells":
 		_color = BASE
 	elif _type == "compute":
 		_color = COMPUTE
+	elif _type == "alarm":
+		_color = ALARM
+
 	for i in range(ib_count.x):
 		for j in range(ib_count.y):
 			# print(i, j)
 			var rect := ColorRect.new()
 			rect.size = ib_box_size
 			rect.position = ib_initial_pos + ib_box_size * Vector2(i, j)
+			if _type == "compute":
+				print("INITIAL_POS", ib_initial_pos)
 			rect.color = Color(_color.r + STEP * i, _color.g, _color.b + STEP * j)
 			# print(rect.color)
 

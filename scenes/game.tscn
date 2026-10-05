@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://blc5cgewech1m"]
+[gd_scene load_steps=6 format=3 uid="uid://blc5cgewech1m"]
 
 [ext_resource type="Script" uid="uid://b58h5vriouh30" path="res://scripts/game.gd" id="1_uwrxv"]
 [ext_resource type="Shader" uid="uid://dstpbhd2hji7k" path="res://shaders/myshader.gdshader" id="2_yqjtg"]
-[ext_resource type="Script" uid="uid://b8loki1beq8h" path="res://scenes/color_rect_2.gd" id="3_lnu2h"]
+[ext_resource type="Script" uid="uid://b8loki1beq8h" path="res://scripts/color_rect_2.gd" id="3_lnu2h"]
+[ext_resource type="Script" uid="uid://xtnie0prjilp" path="res://scripts/xy_label.gd" id="4_lbhrr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lbhrr"]
 shader = ExtResource("2_yqjtg")
@@ -22,8 +23,8 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -1166.0
 offset_top = -648.0
-offset_right = 1160.0
-offset_bottom = 650.0
+offset_right = 1166.0
+offset_bottom = 648.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
@@ -43,3 +44,10 @@ offset_right = 69.0
 offset_bottom = 56.0
 color = Color(0.9862918, 0.50488335, 0.31844193, 1)
 script = ExtResource("3_lnu2h")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -20.0
+offset_top = 589.0
+offset_right = 20.0
+offset_bottom = 612.0
+script = ExtResource("4_lbhrr")
