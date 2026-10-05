@@ -1,6 +1,5 @@
 extends Label
-
-## Shows the cursor position with the center of the ColorRect "screen" as (0, 0).
+## Debug: shows the cursor position with the center of the ColorRect "screen" as (0, 0).
 
 @onready var _screen: ColorRect = $"../ColorRect"
 
