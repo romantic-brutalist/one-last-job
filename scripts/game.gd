@@ -1,10 +1,11 @@
 extends Node2D
+
 ## Main scene: lays out three box grids ("cells", "compute", "alarm") on the
 ## screen, and moves a keyboard-driven selector across the cell grid.
 ##
 ## Current state: grid layout + selector movement work; interaction (space
 ## press) is stubbed.
-
+var rng := RandomNumberGenerator.new()
 var box_scene: PackedScene = preload("res://scenes/box.tscn")
 var span_grid: bool = true
 var cells: Array[Vector2] = []
@@ -20,22 +21,41 @@ var box_count_cells: Vector2 = Vector2(4, 3)
 var box_count_compute: Vector2 = Vector2(1, 10)
 var box_count_alarm: Vector2 = Vector2(1, 10)
 var init_margin: Vector4 = Vector4(0.2, 0.8, 0.2, 0.8)
+var grid := PackedInt32Array()
 
 
 ## Instantiates every box, positions it via [method generate_grid_positions],
 ## and places the selector on the first cell.
 func _ready() -> void:
+	grid.resize(box_count_cells.x * box_count_cells.y)
+	grid.fill(0)
+	var grid_fill: int = 0
+	for i in range(box_count_cells.x):
+		for j in range(box_count_cells.y):
+			var _prob: int = rng.randi_range(0, 99)
+			if _prob < 20:
+				grid_fill = 0
+			elif _prob < 50:
+				grid_fill = 1
+			elif _prob < 85:
+				grid_fill = 2
+			else:
+				grid_fill = 3
+
+			grid[i * box_count_cells.y + j] = grid_fill
+	#TODO: modularize ready function, move box spawns under generate grid function
 	var plain_size: Vector2 = $ColorRect.size
 	print("Plain Size:", plain_size)
 	box_size = Vector2(175, 125)
 	selector_scale = Vector2(1.2, 1.25)
 	$Selector.size = box_size * selector_scale
 	var cell_positions: Array[Vector2] = generate_grid_positions(plain_size, box_count_cells, box_size, init_margin)
-	for box_position in cell_positions:
+	for i in cell_positions.size():
+		var box_position: Vector2 = cell_positions[i]
 		# draw_box_borders(box_position - box_size / 2, box_size)
 		print(box_position)
 		var box1: Node2D = box_scene.instantiate()
-		box1.setup("cells", box_position, "x")
+		box1.setup("cells", box_position, str(grid[i]))
 		boxes_cells.append(box1)
 		$boxes.add_child(box1)
 		cells.append(box_position)
@@ -45,9 +65,9 @@ func _ready() -> void:
 	for i in cell_positions_compute.size():
 		var compute_box_position = cell_positions_compute[i]
 		if i == cell_positions_compute.size() - 1:
-			#TODO: Score box alignment and debug
 			var text_box_size: Vector2 = box_size / 2
-			label_at_pos(compute_box_position + Vector2(-1 * text_box_size.x / 2, 3 * text_box_size.y), box_size / 4, "Hello")
+			label_at_pos(compute_box_position + Vector2(-0.5 * text_box_size.x / 2, 2 * text_box_size.y), box_size / 4, "COMPUTE:10")
+			# draw_box_borders(compute_box_position + Vector2(-0.5 * text_box_size.x / 2, 3 * text_box_size.y), box_size / 4)
 		print(compute_box_position)
 		# draw_box_borders(compute_box_position - box_size / 8, box_size / 4)
 		var box2: Node2D = box_scene.instantiate()
@@ -58,6 +78,9 @@ func _ready() -> void:
 	var cell_positions_alarm: Array[Vector2] = generate_grid_positions(plain_size, box_count_alarm, box_size / 4, Vector4(0.825, 0.975, 0.2, 0.8))
 	for i in cell_positions_alarm.size():
 		var alarm_box_position = cell_positions_alarm[i]
+		if i == cell_positions_compute.size() - 1:
+			var text_box_size: Vector2 = box_size / 2
+			label_at_pos(alarm_box_position + Vector2(-0.5 * text_box_size.x / 2, 2 * text_box_size.y), box_size / 4, "ALARM:10")
 		print(alarm_box_position)
 		# draw_box_borders(alarm_box_position - box_size / 8, box_size / 4)
 		var box2: Node2D = box_scene.instantiate()
@@ -178,9 +201,12 @@ func corner_pairs(a: Vector2, b: Vector2) -> Array[Vector2]:
 func label_at_pos(_pos: Vector2, _size: Vector2, _text: String) -> void:
 	var text_label := Label.new()
 	text_label.position = _pos
-	text_label.text = "_text"
-	text_label.size = _size
+	text_label.text = _text
 	text_label.add_theme_color_override("font_color", Color.WHITE)
+	text_label.add_theme_font_size_override("font_size", 20)
 	text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	text_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	add_child(text_label)
+	text_label.size = text_label.get_minimum_size()
+	text_label.position = _pos + _size / 2.0 - text_label.size / 2.0
+	print("TEXT LABEL DEBUG|", "POS:", text_label.position, "SIZE:", text_label.size, "SIZE INIT:", _size)

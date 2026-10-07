@@ -12,7 +12,6 @@ var cells: Array[ColorRect] = []
 
 func _ready() -> void:
 	return
-	# $colorbox.color = Color("#23ee47")
 
 
 ## Builds and lays out the inner cells, then centers the box at `_position`.
@@ -52,18 +51,15 @@ func setup(_type: String, _position: Vector2, _label: String = "", _size: Vector
 	if _label != "":
 		var text_label := Label.new()
 		text_label.position = Vector2(-0.5 * ib_box_size.x, 2.5 * ib_box_size.y)
-		text_label.text = "[ X ]"
+		text_label.text = "[" + _label + "]"
 		text_label.size = ib_box_size
 		text_label.add_theme_color_override("font_color", Color.WHITE)
 		text_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		text_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		add_child(text_label)
-		draw_box_borders(text_label.position, ib_box_size)
+		# draw_box_borders(text_label.position, ib_box_size)
 
 	position = _position
-	# $colorbox.size = _size
-	# $colorbox.position = Vector2(0, 0)
-	# $colorbox.position = Vector2(-0.5 * _size.x, -0.5 * _size.y)
 
 
 func draw_box_borders(_pos: Vector2, _size: Vector2) -> void:
